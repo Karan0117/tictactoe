@@ -30,6 +30,13 @@ const GlobalStyle = createGlobalStyle`
     .occupied{
         pointer-events: none;
     }
+    .win-block{
+        background-color: #9dae6aa1
+        /* background-color: #313a35 */
+    }
+    .disable{
+        pointer-events: none;
+    }
 `;
 
 export default GlobalStyle;
