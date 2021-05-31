@@ -6,13 +6,16 @@ import GameBlock from "./GameBlock";
 // redux
 import { useSelector, useDispatch } from "react-redux";
 // actions
-import { blocksAction } from "../actions/blocksAction";
+// import { blocksAction } from "../actions/blocksAction";
+import { winAction } from "../actions/winAction";
 
 const Game = () => {
   // reference to game container
   const refGameContainer = useRef();
   // getting data from redux
-  let isPlayerOne = useSelector((state) => state.user.isPlayer1);
+  let reduxState = useSelector((state) => state);
+
+  let { user, solutions, winStatus } = reduxState;
   // dispatch
   const dispatch = useDispatch();
 
@@ -27,10 +30,11 @@ const Game = () => {
     occupiedCross = [],
     activeIDs = [];
 
+  // console.log(refGameContainer.current.childNodes);
+
   // event handlers
   const logicHandler = (event) => {
     setTimeout(() => {
-      // allBlocks = refGameContainer.current.childNodes;
       // allBlocks.forEach((block) =>
       //   console.log(
       //     "block",
@@ -40,32 +44,89 @@ const Game = () => {
       //   )
       // );
 
-      if (event.target.classList.contains("box")) {
-        occupiedBlocks.push(event.target);
-        dispatch(blocksAction(event.target));
+      ///////////////////// NEW LOGIC v2
+
+      allBlocks = refGameContainer.current.childNodes;
+      // console.log(allBlocks);
+
+      occupiedBlocks = Array.prototype.filter.call(allBlocks, (block) =>
+        block.classList.contains("occupied")
+      );
+
+      // console.log("occupiedBlocks (new) - ", occupiedBlocks);
+
+      occupiedCircle = occupiedBlocks.filter((occBlock) =>
+        occBlock.classList.contains("circle")
+      );
+      occupiedCross = occupiedBlocks.filter((occBlock) =>
+        occBlock.classList.contains("cross")
+      );
+
+      // console.log("occupiedCircle (new) - ", occupiedCircle);
+      // console.log("occupiedCross (new) - ", occupiedCross);
+
+      // console.log("player Status", user);
+      // console.log("solutions", solutions);
+
+      if (user.isPlayer1) {
+        activeIDs = occupiedCircle.map((block) => block.id);
+      } else {
+        activeIDs = occupiedCross.map((block) => block.id);
       }
 
-      occupiedCircle = occupiedBlocks.filter((block) =>
-        block.classList.contains("circle")
-      );
-      occupiedCross = occupiedBlocks.filter((block) =>
-        block.classList.contains("cross")
-      );
+      // console.log(activeIDs);
+      allBlocks.forEach((block) => {
+        block.classList.remove("win-block");
+        refGameContainer.current.classList.remove("disable");
+      });
+      for (let i = 0; i < 8; i++) {
+        // console.log(i, "-", solutions[i]);
+        // console.log(solutions[i].every((item) => activeIDs.includes(item)));
+        if (solutions[i].every((item) => activeIDs.includes(item))) {
+          // console.log("here is the solution", solutions[i]);
+          // console.log("player - ", user.isPlayer1);
+          solutions[i].forEach((item) => {
+            // document.querySelector(`#${item}`).classList.add("win-block");
+            allBlocks.forEach((block) => {
+              refGameContainer.current.classList.add("disable");
+              if (block.id === item) {
+                block.classList.add("win-block");
+              }
+            });
+          });
+          dispatch(winAction());
+        }
+      }
+
+      //////////////////////
+
+      // console.log("after", allBlocks);
+      // if (event.target.classList.contains("box")) { //THIS LOGIC IS WRONG. ALL THE BOXES WILL have the class of .box
+      //   occupiedBlocks.push(event.target);
+      // dispatch(blocksAction(event.target));
+      // }
+
+      // occupiedCircle = occupiedBlocks.filter((block) =>
+      //   block.classList.contains("circle")
+      // );
+      // occupiedCross = occupiedBlocks.filter((block) =>
+      //   block.classList.contains("cross")
+      // );
 
       // console.log("isPlayer1 hahhaha", isPlayerOne);
-      console.log("occupiedCircle", occupiedCircle);
-      if (isPlayerOne) {
-        occupiedCircle.forEach((item) => {
-          console.log("item", item);
-          activeIDs.push(item.id);
-        });
-      } else {
-        occupiedCross.forEach((item) => {
-          console.log("item", item);
-          activeIDs.push(item.id);
-        });
-      }
-      console.log("activeIDs", activeIDs);
+      // console.log("occupiedCircle", occupiedCircle);
+      // if (isPlayerOne) {
+      //   occupiedCircle.forEach((item) => {
+      //     console.log("item", item);
+      //     activeIDs.push(item.id);
+      //   });
+      // } else {
+      //   occupiedCross.forEach((item) => {
+      //     console.log("item", item);
+      //     activeIDs.push(item.id);
+      //   });
+      // }
+      // console.log("activeIDs", activeIDs);
     }, 1000);
   };
 

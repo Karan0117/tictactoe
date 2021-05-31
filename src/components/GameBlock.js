@@ -11,22 +11,25 @@ const GameBlock = ({ n }) => {
   const refGameBlock = useRef();
   // getting data from REDUX
   const userData = useSelector((state) => state.user);
+  const isWon = useSelector((state) => state.winStatus.isWon);
   // switching the user on click
   const dispatch = useDispatch();
 
   // event handlers
   const clickHandler = (event) => {
     // console.log("here is current", refGameBlock.current);
-    if (!refGameBlock.current.classList.contains("occupied")) {
-      refGameBlock.current.classList.add("occupied");
-      if (userData.isPlayer1) {
-        refGameBlock.current.classList.add("circle");
-      } else {
-        refGameBlock.current.classList.add("cross");
+    if (!isWon) {
+      if (!refGameBlock.current.classList.contains("occupied")) {
+        refGameBlock.current.classList.add("occupied");
+        if (userData.isPlayer1) {
+          refGameBlock.current.classList.add("circle");
+        } else {
+          refGameBlock.current.classList.add("cross");
+        }
       }
-    }
 
-    dispatch(userSwitcher());
+      dispatch(userSwitcher());
+    }
   };
 
   return (
