@@ -1,6 +1,16 @@
 const initState = {
-  usernameOne: [],
-  usernameTwo: [],
+  userOne: {
+    name: "ROBOT 1",
+    countWin: 0,
+    countLost: 0,
+    streak: 0,
+  },
+  userTwo: {
+    name: "ROBOT 2",
+    countWin: 0,
+    countLost: 0,
+    streak: 0,
+  },
 };
 
 const userInfoReducer = (state = initState, action) => {
@@ -8,8 +18,8 @@ const userInfoReducer = (state = initState, action) => {
     case "NEW_USER_REGISTER":
       return {
         ...state,
-        usernameOne: action.payload.userOne,
-        usernameTwo: action.payload.userTwo,
+        userOne: { ...state.userOne, name: action.payload.name.userOne },
+        userTwo: { ...state.userTwo, name: action.payload.name.userTwo },
       };
     default:
       return { ...state };
