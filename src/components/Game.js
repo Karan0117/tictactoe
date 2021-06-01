@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 // actions
 // import { blocksAction } from "../actions/blocksAction";
 import { winAction } from "../actions/winAction";
+import { restartAction } from "../actions/restartAction";
 
 const Game = () => {
   // reference to game container
@@ -15,7 +16,7 @@ const Game = () => {
   // getting data from redux
   let reduxState = useSelector((state) => state);
 
-  let { user, solutions, winStatus } = reduxState;
+  let { user, solutions, winStatus, restartStatus } = reduxState;
   // dispatch
   const dispatch = useDispatch();
 
@@ -32,6 +33,17 @@ const Game = () => {
 
   // console.log(refGameContainer.current.childNodes);
 
+  if (restartStatus.isRestart && !winStatus.isWon) {
+    console.log("time to reset");
+    // console.log("just trying", refGameContainer.current);
+    refGameContainer.current.childNodes.forEach((item) => {
+      // console.log(item.classList);
+      item.classList.remove("occupied", "circle", "cross");
+    });
+    dispatch(restartAction());
+    // dispatch(winAction());
+  }
+
   // event handlers
   const logicHandler = (event) => {
     setTimeout(() => {
@@ -45,8 +57,8 @@ const Game = () => {
       // );
 
       ///////////////////// NEW LOGIC v2
-
       allBlocks = refGameContainer.current.childNodes;
+
       // console.log(allBlocks);
 
       occupiedBlocks = Array.prototype.filter.call(allBlocks, (block) =>
@@ -91,10 +103,10 @@ const Game = () => {
               refGameContainer.current.classList.add("disable");
               if (block.id === item) {
                 block.classList.add("win-block");
+                dispatch(winAction());
               }
             });
           });
-          dispatch(winAction());
         }
       }
 
@@ -127,7 +139,7 @@ const Game = () => {
       //   });
       // }
       // console.log("activeIDs", activeIDs);
-    }, 1000);
+    }, 500);
   };
 
   return (
