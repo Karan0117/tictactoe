@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 // import { blocksAction } from "../actions/blocksAction";
 import { winAction } from "../actions/winAction";
 import { restartAction } from "../actions/restartAction";
-import { userReset } from "../actions/userAction";
+import { userReset, userUpdate } from "../actions/userAction";
 
 const Game = () => {
   // reference to game container
@@ -35,7 +35,7 @@ const Game = () => {
   // console.log(refGameContainer.current.childNodes);
 
   if (restartStatus.isRestart && !winStatus.isWon) {
-    console.log("time to reset");
+    // console.log("time to reset");
     // console.log("just trying", refGameContainer.current);
     refGameContainer.current.childNodes.forEach((item) => {
       // console.log(item.classList);
@@ -45,6 +45,11 @@ const Game = () => {
     dispatch(userReset());
     // dispatch(winAction());
   }
+
+  ////////////////////// storing records when game is won
+  // if (winStatus.isWon) {
+  //   dispatch(userUpdate(user.isPlayer1));
+  // }
 
   // event handlers
   const logicHandler = (event) => {
@@ -99,13 +104,15 @@ const Game = () => {
         if (solutions[i].every((item) => activeIDs.includes(item))) {
           // console.log("here is the solution", solutions[i]);
           // console.log("player - ", user.isPlayer1);
+
+          dispatch(winAction());
+          dispatch(userUpdate(user.isPlayer1));
           solutions[i].forEach((item) => {
             // document.querySelector(`#${item}`).classList.add("win-block");
             allBlocks.forEach((block) => {
               refGameContainer.current.classList.add("disable");
               if (block.id === item) {
                 block.classList.add("win-block");
-                dispatch(winAction());
               }
             });
           });
