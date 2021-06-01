@@ -16,8 +16,18 @@ const userInfoReducer = (state = initState, action) => {
     case "NEW_USER_REGISTER":
       return {
         ...state,
-        userOne: { ...state.userOne, name: action.payload.name.userOne },
-        userTwo: { ...state.userTwo, name: action.payload.name.userTwo },
+        userOne: {
+          ...state.userOne,
+          countWin: 0,
+          countLost: 0,
+          name: action.payload.name.userOne,
+        },
+        userTwo: {
+          ...state.userTwo,
+          countWin: 0,
+          countLost: 0,
+          name: action.payload.name.userTwo,
+        },
       };
     case "USER1_UPDATE":
       return {

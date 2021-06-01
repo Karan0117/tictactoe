@@ -34,6 +34,10 @@ const GlobalStyle = createGlobalStyle`
         background-color: #9dae6aa1
         /* background-color: #313a35 */
     }
+    .draw-block{
+        background-color: #450536a0
+
+    }
     .disable{
         pointer-events: none;
     }
