@@ -12,15 +12,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { restartAction } from "./actions/restartAction";
 import { registerAction } from "./actions/registerAction";
 import { userRegister } from "./actions/userAction";
+import { winAction } from "./actions/winAction";
+import { newGameAction } from "./actions/newGameAction";
 
 function App() {
   // dispatch
   const dispatch = useDispatch();
-  const { winStatus, registerStatus, userInfo } = useSelector((state) => state);
+  const { winStatus, registerStatus, userInfo, newGameStatus } = useSelector(
+    (state) => state
+  );
 
   // ref
   const refRegisterContent = useRef();
   const refRegisterContainer = useRef();
+
   let registerForm,
     userNames = [];
 
@@ -34,7 +39,8 @@ function App() {
 
   // new game
   const newGameHandler = (event) => {
-    console.log("lets play new game");
+    dispatch(newGameAction());
+    dispatch(winAction());
   };
 
   // register
@@ -53,20 +59,19 @@ function App() {
   const registerConfirmHandler = (event) => {
     event.stopPropagation();
     registerForm = refRegisterContent.current;
-    // console.log("registerform", registerForm.childNodes[1]);
+
+    // fetching the names from forms
     registerForm.childNodes[1].childNodes.forEach((item) => {
       userNames.push(item.childNodes[1].childNodes[0].value);
     });
+    // sending the names to redux
     dispatch(userRegister(userNames));
     // cleaning the inputs
     registerForm.childNodes[1].childNodes.forEach((item) => {
       item.childNodes[1].childNodes[0].value = "";
     });
-    console.log("register state value before- ", registerStatus);
-    // setTimeout(() => {
-    //   dispatch(registerAction());
-    // }, 1000);
-    console.log("register state value after - ", registerStatus);
+    dispatch(newGameAction());
+    // hiding the dialogue box at the end
     refRegisterContainer.current.classList.add("hide");
   };
 
@@ -74,7 +79,7 @@ function App() {
   const registerCancelHandler = (event) => {
     // event.stopPropagation();
     // dispatch(registerAction());
-    registerHandler();
+    refRegisterContainer.current.classList.add("hide");
     // console.log("Boundary Clicked or the cancel btn");
   };
 
@@ -148,7 +153,7 @@ function App() {
           )}
           {winStatus.isWon && (
             <StyledBtn className="new-game-btn" onClick={newGameHandler}>
-              <h2>New Game</h2>
+              <h2>Play Again</h2>
             </StyledBtn>
           )}
           <StyledRegisterBtn className="register-btn" onClick={registerHandler}>

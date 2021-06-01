@@ -11,7 +11,7 @@ const userReducer = (state = initState, action) => {
         isPlayer1: !state.isPlayer1,
         isCircle: !state.isCircle,
       };
-    case "USER_RESET":
+    case "SIDE_RESET":
       return {
         ...state,
         isPlayer1: true,

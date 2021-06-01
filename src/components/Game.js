@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 // styling
 import styled from "styled-components";
 // components
@@ -9,7 +9,8 @@ import { useSelector, useDispatch } from "react-redux";
 // import { blocksAction } from "../actions/blocksAction";
 import { winAction } from "../actions/winAction";
 import { restartAction } from "../actions/restartAction";
-import { userReset, userUpdate } from "../actions/userAction";
+import { sideReset, userUpdate } from "../actions/userAction";
+import { newGameAction } from "../actions/newGameAction";
 
 const Game = () => {
   // reference to game container
@@ -17,7 +18,7 @@ const Game = () => {
   // getting data from redux
   let reduxState = useSelector((state) => state);
 
-  let { user, solutions, winStatus, restartStatus } = reduxState;
+  let { user, solutions, winStatus, restartStatus, newGameStatus } = reduxState;
   // dispatch
   const dispatch = useDispatch();
 
@@ -27,6 +28,8 @@ const Game = () => {
   }
 
   let allBlocks,
+    allBlocksArr,
+    isAllOccupied,
     occupiedBlocks = [],
     occupiedCircle = [],
     occupiedCross = [],
@@ -39,32 +42,44 @@ const Game = () => {
     // console.log("just trying", refGameContainer.current);
     refGameContainer.current.childNodes.forEach((item) => {
       // console.log(item.classList);
-      item.classList.remove("occupied", "circle", "cross", ".win-block");
+      item.classList.remove(
+        "occupied",
+        "circle",
+        "cross",
+        "win-block",
+        "draw-block"
+      );
     });
     dispatch(restartAction());
-    dispatch(userReset());
+    dispatch(sideReset());
     // dispatch(winAction());
   }
 
-  ////////////////////// storing records when game is won
-  // if (winStatus.isWon) {
-  //   dispatch(userUpdate(user.isPlayer1));
-  // }
+  // Playing new Game - Play Again
+  useEffect(() => {
+    if (newGameStatus.isNewGame) {
+      refGameContainer.current.childNodes.forEach((item) => {
+        item.classList.remove(
+          "occupied",
+          "circle",
+          "cross",
+          "win-block",
+          "draw-block"
+        );
+      });
+      refGameContainer.current.classList.remove("disable");
+      // dispatch(restartAction());
+      dispatch(sideReset());
+      dispatch(newGameAction());
+    }
+  }, [newGameStatus.isNewGame, dispatch]);
 
   // event handlers
   const logicHandler = (event) => {
     setTimeout(() => {
-      // allBlocks.forEach((block) =>
-      //   console.log(
-      //     "block",
-      //     block,
-      //     block.classList,
-      //     block.classList.contains("occupied")
-      //   )
-      // );
-
       ///////////////////// NEW LOGIC v2
       allBlocks = refGameContainer.current.childNodes;
+      allBlocksArr = Array.from(allBlocks);
 
       // console.log(allBlocks);
 
@@ -96,6 +111,7 @@ const Game = () => {
       // console.log(activeIDs);
       allBlocks.forEach((block) => {
         block.classList.remove("win-block");
+        block.classList.remove("draw-block");
         refGameContainer.current.classList.remove("disable");
       });
       for (let i = 0; i < 8; i++) {
@@ -105,18 +121,37 @@ const Game = () => {
           // console.log("here is the solution", solutions[i]);
           // console.log("player - ", user.isPlayer1);
 
+          // if we are inside the IF block, there is a winner
+
           dispatch(winAction());
           dispatch(userUpdate(user.isPlayer1));
+          refGameContainer.current.classList.add("disable"); // disabling the grid so no further changes can be made
+          // finding out the result blocks and changing their background color to green to identify
           solutions[i].forEach((item) => {
-            // document.querySelector(`#${item}`).classList.add("win-block");
             allBlocks.forEach((block) => {
-              refGameContainer.current.classList.add("disable");
               if (block.id === item) {
                 block.classList.add("win-block");
               }
             });
           });
         }
+      }
+
+      //////// this is the corrent logic for draw situation but this is getting checked after every move, it must be done when no moves are left
+      // for (let i = 0; i < allBlocks.length; i++) {
+      //   if (allBlocks[i].classList.contains("occupied")) {
+      //     allBlocks[i].classList.add("draw-block");
+      //   }
+      // }
+
+      isAllOccupied = allBlocksArr.every((block) =>
+        block.classList.contains("occupied")
+      );
+      // console.log("isAllOccupied", isAllOccupied);
+      if (isAllOccupied) {
+        allBlocks.forEach((block) => {
+          block.classList.add("draw-block");
+        });
       }
 
       //////////////////////

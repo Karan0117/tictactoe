@@ -4,9 +4,9 @@ export const userSwitcher = () => (dispatch) => {
   });
 };
 
-export const userReset = () => (dispatch) => {
+export const sideReset = () => (dispatch) => {
   dispatch({
-    type: "USER_RESET",
+    type: "SIDE_RESET",
   });
 };
 
