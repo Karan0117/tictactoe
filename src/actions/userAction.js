@@ -4,12 +4,20 @@ export const userSwitcher = () => (dispatch) => {
   });
 };
 
+export const userReset = () => (dispatch) => {
+  dispatch({
+    type: "USER_RESET",
+  });
+};
+
 export const userRegister = (userNames) => (dispatch) => {
   dispatch({
     type: "NEW_USER_REGISTER",
     payload: {
-      userOne: userNames[0],
-      userTwo: userNames[1],
+      name: {
+        userOne: userNames[0],
+        userTwo: userNames[1],
+      },
     },
   });
 };

@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 // import { blocksAction } from "../actions/blocksAction";
 import { winAction } from "../actions/winAction";
 import { restartAction } from "../actions/restartAction";
+import { userReset } from "../actions/userAction";
 
 const Game = () => {
   // reference to game container
@@ -38,9 +39,10 @@ const Game = () => {
     // console.log("just trying", refGameContainer.current);
     refGameContainer.current.childNodes.forEach((item) => {
       // console.log(item.classList);
-      item.classList.remove("occupied", "circle", "cross");
+      item.classList.remove("occupied", "circle", "cross", ".win-block");
     });
     dispatch(restartAction());
+    dispatch(userReset());
     // dispatch(winAction());
   }
 

@@ -16,10 +16,11 @@ import { userRegister } from "./actions/userAction";
 function App() {
   // dispatch
   const dispatch = useDispatch();
-  const { winStatus, registerStatus } = useSelector((state) => state);
+  const { winStatus, registerStatus, userInfo } = useSelector((state) => state);
 
   // ref
   const refRegisterContent = useRef();
+  const refRegisterContainer = useRef();
   let registerForm,
     userNames = [];
 
@@ -38,7 +39,8 @@ function App() {
 
   // register
   const registerHandler = (event) => {
-    dispatch(registerAction());
+    // dispatch(registerAction());
+    refRegisterContainer.current.classList.remove("hide");
   };
 
   // regsiter content handler
@@ -56,9 +58,16 @@ function App() {
       userNames.push(item.childNodes[1].childNodes[0].value);
     });
     dispatch(userRegister(userNames));
-    setTimeout(() => {
-      dispatch(registerAction());
-    }, 1000);
+    // cleaning the inputs
+    registerForm.childNodes[1].childNodes.forEach((item) => {
+      item.childNodes[1].childNodes[0].value = "";
+    });
+    console.log("register state value before- ", registerStatus);
+    // setTimeout(() => {
+    //   dispatch(registerAction());
+    // }, 1000);
+    console.log("register state value after - ", registerStatus);
+    refRegisterContainer.current.classList.add("hide");
   };
 
   // register boundary click
@@ -73,49 +82,53 @@ function App() {
     <>
       <GlobalStyle />
       <AppContainer className="App">
-        {registerStatus.isRegister && (
-          <StyledRegisterContainer onClick={registerCancelHandler}>
-            <div
-              className="register-content"
-              ref={refRegisterContent}
-              onClick={registerContentHandler}
-            >
-              <h1>Register New Players</h1>
-              <div className="forms">
-                <div className="player-info">
-                  <h2>Player 1</h2>
-                  <form autoComplete="off">
-                    {/* <label htmlFor="name">Name</label> */}
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="Enter Player 1 Name"
-                    />
-                  </form>
-                </div>
-                <div className="player-info">
-                  <h2>Player 2</h2>
-                  <form autoComplete="off">
-                    {/* <label htmlFor="name">Name</label> */}
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="Enter Player 2 Name"
-                    />
-                  </form>
-                </div>
+        {/* {registerStatus.isRegister && ( */}
+        <StyledRegisterContainer
+          onClick={registerCancelHandler}
+          ref={refRegisterContainer}
+          className="hide"
+        >
+          <div
+            className="register-content"
+            ref={refRegisterContent}
+            onClick={registerContentHandler}
+          >
+            <h1>Register New Players</h1>
+            <div className="forms">
+              <div className="player-info">
+                <h2>Player 1</h2>
+                <form autoComplete="off">
+                  {/* <label htmlFor="name">Name</label> */}
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter Player 1 Name"
+                  />
+                </form>
               </div>
-              <div className="btns">
-                <StyledDoneBtn onClick={registerConfirmHandler}>
-                  <h3>Register</h3>
-                </StyledDoneBtn>
-                <StyledCancelBtn onClick={registerCancelHandler}>
-                  <h3>Cancel</h3>
-                </StyledCancelBtn>
+              <div className="player-info">
+                <h2>Player 2</h2>
+                <form autoComplete="off">
+                  {/* <label htmlFor="name">Name</label> */}
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter Player 2 Name"
+                  />
+                </form>
               </div>
             </div>
-          </StyledRegisterContainer>
-        )}
+            <div className="btns">
+              <StyledDoneBtn onClick={registerConfirmHandler}>
+                <h3>Register</h3>
+              </StyledDoneBtn>
+              <StyledCancelBtn onClick={registerCancelHandler}>
+                <h3>Cancel</h3>
+              </StyledCancelBtn>
+            </div>
+          </div>
+        </StyledRegisterContainer>
+        {/* )} */}
         <div className="top-row">
           <h2>View Scoreboard</h2>
           <h1>Tic Tac Toe</h1>
@@ -123,9 +136,9 @@ function App() {
         <h2>Timer</h2>
         {/* factor out the player information here and then pass them separately in the PlayerInfo components */}
         <GamesPanel className="games-panel">
-          <PlayerInfo />
+          <PlayerInfo num={"1"} userInfo={userInfo.userOne} />
           <Game />
-          <PlayerInfo />
+          <PlayerInfo num={"2"} userInfo={userInfo.userTwo} />
         </GamesPanel>
         <StyledControls className="controls">
           {!winStatus.isWon && (
