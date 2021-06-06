@@ -10,7 +10,6 @@ import { StyledBtn } from "./styles/StyledComponents";
 import { useDispatch, useSelector } from "react-redux";
 // actions
 import { restartAction } from "./actions/restartAction";
-import { registerAction } from "./actions/registerAction";
 import { userRegister } from "./actions/userAction";
 import { winAction } from "./actions/winAction";
 import { newGameAction } from "./actions/newGameAction";
@@ -18,9 +17,7 @@ import { newGameAction } from "./actions/newGameAction";
 function App() {
   // dispatch
   const dispatch = useDispatch();
-  const { winStatus, registerStatus, userInfo, newGameStatus } = useSelector(
-    (state) => state
-  );
+  const { winStatus, userInfo } = useSelector((state) => state);
 
   // ref
   const refRegisterContent = useRef();
@@ -43,16 +40,14 @@ function App() {
     dispatch(winAction());
   };
 
-  // register
+  // register new players
   const registerHandler = (event) => {
-    // dispatch(registerAction());
     refRegisterContainer.current.classList.remove("hide");
   };
 
   // regsiter content handler
   const registerContentHandler = (event) => {
     event.stopPropagation();
-    // console.log("register box clicked");
   };
 
   // register confirm - inside the block
@@ -77,17 +72,13 @@ function App() {
 
   // register boundary click
   const registerCancelHandler = (event) => {
-    // event.stopPropagation();
-    // dispatch(registerAction());
     refRegisterContainer.current.classList.add("hide");
-    // console.log("Boundary Clicked or the cancel btn");
   };
 
   return (
     <>
       <GlobalStyle />
       <AppContainer className="App">
-        {/* {registerStatus.isRegister && ( */}
         <StyledRegisterContainer
           onClick={registerCancelHandler}
           ref={refRegisterContainer}
@@ -103,7 +94,6 @@ function App() {
               <div className="player-info">
                 <h2>Player 1</h2>
                 <form autoComplete="off">
-                  {/* <label htmlFor="name">Name</label> */}
                   <input
                     type="text"
                     name="name"
@@ -114,7 +104,6 @@ function App() {
               <div className="player-info">
                 <h2>Player 2</h2>
                 <form autoComplete="off">
-                  {/* <label htmlFor="name">Name</label> */}
                   <input
                     type="text"
                     name="name"
@@ -133,13 +122,12 @@ function App() {
             </div>
           </div>
         </StyledRegisterContainer>
-        {/* )} */}
         <div className="top-row">
           <h2>View Scoreboard</h2>
           <h1>Tic Tac Toe</h1>
         </div>
         <h2>Timer</h2>
-        {/* factor out the player information here and then pass them separately in the PlayerInfo components */}
+        {/* factoring out the player information here and then pass them separately in the PlayerInfo components */}
         <GamesPanel className="games-panel">
           <PlayerInfo num={"1"} userInfo={userInfo.userOne} />
           <Game />

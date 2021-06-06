@@ -6,7 +6,6 @@ import GameBlock from "./GameBlock";
 // redux
 import { useSelector, useDispatch } from "react-redux";
 // actions
-// import { blocksAction } from "../actions/blocksAction";
 import { winAction } from "../actions/winAction";
 import { restartAction } from "../actions/restartAction";
 import { sideReset, userUpdate } from "../actions/userAction";
@@ -35,13 +34,9 @@ const Game = () => {
     occupiedCross = [],
     activeIDs = [];
 
-  // console.log(refGameContainer.current.childNodes);
-
+  // if the player decides to restart without winning the existing game
   if (restartStatus.isRestart && !winStatus.isWon) {
-    // console.log("time to reset");
-    // console.log("just trying", refGameContainer.current);
     refGameContainer.current.childNodes.forEach((item) => {
-      // console.log(item.classList);
       item.classList.remove(
         "occupied",
         "circle",
@@ -52,7 +47,6 @@ const Game = () => {
     });
     dispatch(restartAction());
     dispatch(sideReset());
-    // dispatch(winAction());
   }
 
   // Playing new Game - Play Again
@@ -68,7 +62,6 @@ const Game = () => {
         );
       });
       refGameContainer.current.classList.remove("disable");
-      // dispatch(restartAction());
       dispatch(sideReset());
       dispatch(newGameAction());
     }
@@ -77,17 +70,12 @@ const Game = () => {
   // event handlers
   const logicHandler = (event) => {
     setTimeout(() => {
-      ///////////////////// NEW LOGIC v2
       allBlocks = refGameContainer.current.childNodes;
       allBlocksArr = Array.from(allBlocks);
-
-      // console.log(allBlocks);
 
       occupiedBlocks = Array.prototype.filter.call(allBlocks, (block) =>
         block.classList.contains("occupied")
       );
-
-      // console.log("occupiedBlocks (new) - ", occupiedBlocks);
 
       occupiedCircle = occupiedBlocks.filter((occBlock) =>
         occBlock.classList.contains("circle")
@@ -96,33 +84,19 @@ const Game = () => {
         occBlock.classList.contains("cross")
       );
 
-      // console.log("occupiedCircle (new) - ", occupiedCircle);
-      // console.log("occupiedCross (new) - ", occupiedCross);
-
-      // console.log("player Status", user);
-      // console.log("solutions", solutions);
-
       if (user.isPlayer1) {
         activeIDs = occupiedCircle.map((block) => block.id);
       } else {
         activeIDs = occupiedCross.map((block) => block.id);
       }
 
-      // console.log(activeIDs);
       allBlocks.forEach((block) => {
         block.classList.remove("win-block");
         block.classList.remove("draw-block");
         refGameContainer.current.classList.remove("disable");
       });
       for (let i = 0; i < 8; i++) {
-        // console.log(i, "-", solutions[i]);
-        // console.log(solutions[i].every((item) => activeIDs.includes(item)));
         if (solutions[i].every((item) => activeIDs.includes(item))) {
-          // console.log("here is the solution", solutions[i]);
-          // console.log("player - ", user.isPlayer1);
-
-          // if we are inside the IF block, there is a winner
-
           dispatch(winAction());
           dispatch(userUpdate(user.isPlayer1));
           refGameContainer.current.classList.add("disable"); // disabling the grid so no further changes can be made
@@ -137,53 +111,16 @@ const Game = () => {
         }
       }
 
-      //////// this is the corrent logic for draw situation but this is getting checked after every move, it must be done when no moves are left
-      // for (let i = 0; i < allBlocks.length; i++) {
-      //   if (allBlocks[i].classList.contains("occupied")) {
-      //     allBlocks[i].classList.add("draw-block");
-      //   }
-      // }
-
+      // adding a class to all the blocks when there is a draw
       isAllOccupied = allBlocksArr.every((block) =>
         block.classList.contains("occupied")
       );
-      // console.log("isAllOccupied", isAllOccupied);
       if (isAllOccupied) {
         allBlocks.forEach((block) => {
           block.classList.add("draw-block");
         });
       }
-
-      //////////////////////
-
-      // console.log("after", allBlocks);
-      // if (event.target.classList.contains("box")) { //THIS LOGIC IS WRONG. ALL THE BOXES WILL have the class of .box
-      //   occupiedBlocks.push(event.target);
-      // dispatch(blocksAction(event.target));
-      // }
-
-      // occupiedCircle = occupiedBlocks.filter((block) =>
-      //   block.classList.contains("circle")
-      // );
-      // occupiedCross = occupiedBlocks.filter((block) =>
-      //   block.classList.contains("cross")
-      // );
-
-      // console.log("isPlayer1 hahhaha", isPlayerOne);
-      // console.log("occupiedCircle", occupiedCircle);
-      // if (isPlayerOne) {
-      //   occupiedCircle.forEach((item) => {
-      //     console.log("item", item);
-      //     activeIDs.push(item.id);
-      //   });
-      // } else {
-      //   occupiedCross.forEach((item) => {
-      //     console.log("item", item);
-      //     activeIDs.push(item.id);
-      //   });
-      // }
-      // console.log("activeIDs", activeIDs);
-    }, 500);
+    }, 300);
   };
 
   return (

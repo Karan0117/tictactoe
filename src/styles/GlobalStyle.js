@@ -1,6 +1,5 @@
 // images
 import circleImg from "../media/circleImg.svg";
-// import circleImg from "../media/circleVector.svg";
 import crossImg from "../media/crossImg.svg";
 // global-store
 import { createGlobalStyle } from "styled-components";
@@ -27,16 +26,17 @@ const GlobalStyle = createGlobalStyle`
     .cross{
         background-image: url(${crossImg});
     }
+    /* when the block has an item */
     .occupied{
         pointer-events: none;
     }
+    /* to specify the winning sequence */
     .win-block{
         background-color: #9dae6aa1
-        /* background-color: #313a35 */
     }
+    /* this class is added to all the blocks when the game draws */
     .draw-block{
         background-color: #450536a0
-
     }
     .disable{
         pointer-events: none;
