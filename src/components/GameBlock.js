@@ -17,7 +17,6 @@ const GameBlock = ({ n }) => {
 
   // event handlers
   const clickHandler = (event) => {
-    // console.log("here is current", refGameBlock.current);
     if (!isWon) {
       if (!refGameBlock.current.classList.contains("occupied")) {
         refGameBlock.current.classList.add("occupied");

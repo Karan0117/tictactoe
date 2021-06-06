@@ -2,7 +2,6 @@ import { combineReducers } from "redux";
 // reducers
 import userReducer from "./userReducer";
 import solutionsReducer from "./solutionsReducer";
-// import blocksReducer from "./blocksReducer";
 import winReducer from "./winReducer";
 import restartReducer from "./restartReducer";
 import registerReducer from "./registerReducer";

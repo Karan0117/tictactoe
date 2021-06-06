@@ -12,6 +12,7 @@ const PlayerInfo = ({ num, userInfo }) => {
   let { user, winStatus, restartStatus } = useSelector((state) => state);
 
   useEffect(() => {
+    // adding and removing borders on player's turn
     if (num === "1" && user.isPlayer1) {
       refPlayerContainer.current.classList.add("player-1-borders");
     }
@@ -60,18 +61,6 @@ const PlayerInfo = ({ num, userInfo }) => {
         refPlayerContainer.current.classList.remove("player-2-borders");
         refPlayerContainer.current.classList.add("general-border");
       }
-      // switch (num) {
-      //   case "1":
-      //     refPlayerContainer.current.classList.remove("general-border");
-      //     refPlayerContainer.current.classList.add("player-1-borders");
-      //     break;
-      //   case "2":
-      //     refPlayerContainer.current.classList.add("general-border");
-      //     refPlayerContainer.current.classList.remove("player-2-borders");
-      //     break;
-      //   default:
-      //     refPlayerContainer.current.classList.add("general-border");
-      // }
     }
   }, [num, user.isPlayer1, winStatus.isWon, restartStatus.isRestart]);
 
